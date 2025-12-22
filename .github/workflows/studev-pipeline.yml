@@ -158,19 +158,20 @@ jobs:
         
       - name: Pull or Build Docker Image
         run: |
-            IMAGE=${{ secrets.DOCKERHUB_USERNAME}}/studevph-app:latest
+            IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/studevph-app:latest
             echo "Attempting to pull image $IMAGE ..."
             if docker pull $IMAGE; then
-                echo "Image pulled succesfully"
+                echo "Image pulled successfully"
             else
                 echo "Image not found. Building locally..."
                 docker compose build web
             fi
+
       - name: Deploy Production
         run: |
             echo "Starting deployment..."
-            docker compose run --rm web python manage.py migrate --noinput
-            docker compose run --rm web python manage.py collectstatic --noinput
-            docker compose up -d --remove-orphans
+            docker compose run --rm web python manage.py migrate --noinput --verbosity 2
+            docker compose run --rm web python manage.py collectstatic --noinput --clear
+            docker compose up -d --build --remove-orphans
             echo "Cleaning up old Docker images..."
-            docker image prune -f
+            docker image prune -f || true
