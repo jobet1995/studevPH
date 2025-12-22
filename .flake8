@@ -1,0 +1,42 @@
+# Author: Jobet P. Casquejo
+# Description: Flake8 configuration for StudevPH Django/Wagtail project.
+# Modified By: Jobet P. Casquejo
+# Modified Date: 2025-12-22
+# Logs:
+#   - 2025-12-22: Added metadata and structured comments.
+#   - 2025-08-03: Initial version created.
+# Version: 1.1
+
+[flake8]
+
+# Maximum allowed line length
+max-line-length = 120
+
+# Ignore specific PEP8 warnings that are common in Django/Wagtail projects
+# E203: Whitespace before ':', often conflicts with black
+# W503: Line break before binary operator, often conflicts with black
+# F403: 'from module import *' used, common in __init__.py
+# F405: Name may be undefined, common in dynamic imports or settings
+ignore = E203,W503,F403,F405
+
+# Exclude directories and files that should not be linted
+exclude =
+    .venv,                  # Python virtual environment
+    venv,                   # alternative venv folder
+    __pycache__,            # compiled Python files
+    migrations,             # Django migrations
+    static,                 # static files
+    media,                  # media uploads
+    node_modules,           # Node.js packages
+    *.pyc,                  # compiled Python files
+    *.egg-info,             # package metadata
+    settings.py,            # Django settings
+    local_settings.py,      # local overrides
+    nginx,                  # Nginx config files
+    manage.py               # optional: if you want to skip top-level manage.py
+
+# Enable checking for import order and complexity
+enable-extensions = G
+
+# Optional: report format
+format = default

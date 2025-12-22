@@ -32,7 +32,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check Python dependencies
+      - name: Set up Python environment
         run: |
           python3 -m venv .venv
           source .venv/bin/activate
@@ -40,11 +40,14 @@ jobs:
           pip install -r requirements.txt
           echo "Dependencies installed successfully"
 
-      - name: Run Python linting
+      - name: Run Python linting and import sorting checks
         run: |
-          pip install flake8
+          source .venv/bin/activate
+          echo "Running flake8..."
           flake8 . --max-line-length=120
-          echo "Linting passed"
+          echo "Running isort check..."
+          isort --check-only --diff .
+          echo "Linting and import checks passed"
 
       - name: Validate Nginx configuration
         run: |
