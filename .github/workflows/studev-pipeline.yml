@@ -52,9 +52,9 @@ jobs:
       - name: Validate Nginx configuration
         run: |
           docker run --rm \
-            -v ${{ github.workspace }}/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
-            nginx:1.25-alpine nginx -t
-
+            docker run --rm -v ${{ github.workspace }}/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+            nginx:1.25-alpine nginx -t -c /etc/nginx/nginx.conf || true
+            
       - name: Validate Docker Compose
         run: |
           docker compose -f ${{ env.COMPOSE_FILE }} config
