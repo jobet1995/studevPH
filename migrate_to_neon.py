@@ -30,15 +30,15 @@ if env_file.exists():
 
 # Setup Django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "studevPH.settings.dev")
-import django
+import django  # noqa: E402
 
 django.setup()
 
-import subprocess
+import subprocess  # noqa: E402
 
-from django.conf import settings
-from django.core.management import call_command
-from django.db import connections
+from django.conf import settings  # noqa: E402
+from django.core.management import call_command  # noqa: E402
+from django.db import connections  # noqa: E402
 
 
 def main():
@@ -57,7 +57,6 @@ def main():
         return False
 
     # Get SQLite database path
-    db_config = settings.DATABASES.get("default", {})
     sqlite_path = None
 
     # Try to find SQLite file
@@ -74,7 +73,7 @@ def main():
 
     if not sqlite_path:
         print(
-            f"\n✗ SQLite database not found.\n"
+            "\n[ERROR] SQLite database not found.\n"
             "Searched in:\n"
             + "\n".join(f"  - {p}" for p in possible_paths)
         )
@@ -85,7 +84,7 @@ def main():
     # Check if running in CI/CD (non-interactive mode)
     ci_mode = os.environ.get("CI", "false").lower() == "true"
     auto_confirm = os.environ.get("AUTO_CONFIRM_MIGRATION", "false").lower() == "true"
-    
+
     # Confirm migration (skip in CI/CD or if AUTO_CONFIRM_MIGRATION is set)
     if not (ci_mode or auto_confirm):
         confirm = input(
@@ -111,17 +110,14 @@ def main():
     print("=" * 60)
 
     export_file = BASE_DIR / "sqlite_export.json"
-    
-    # Save original DATABASE_URL
-    original_db_url = os.environ.get("DATABASE_URL")
-    
+
     try:
         print("Exporting all data...")
         # Temporarily unset DATABASE_URL to force SQLite usage
         env = os.environ.copy()
         if "DATABASE_URL" in env:
             del env["DATABASE_URL"]
-        
+
         # Run dumpdata in a subprocess with DATABASE_URL unset
         # This ensures it uses SQLite from the base settings
         result = subprocess.run(
@@ -138,10 +134,10 @@ def main():
             text=True,
             encoding="utf-8",
         )
-        
+
         if result.returncode != 0:
             raise Exception(f"dumpdata failed: {result.stderr}")
-        
+
         # Write the output to file
         with open(export_file, "w", encoding="utf-8") as f:
             f.write(result.stdout)
@@ -238,4 +234,3 @@ if __name__ == "__main__":
 
         traceback.print_exc()
         sys.exit(1)
-

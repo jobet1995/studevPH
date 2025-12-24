@@ -40,8 +40,8 @@ except ImportError:
     print("  pip install -r requirements.txt")
     sys.exit(1)
 
-from django.conf import settings
-from django.db import connection
+from django.conf import settings  # noqa: E402
+from django.db import connection, connections  # noqa: E402
 
 
 def test_connection():
@@ -67,11 +67,11 @@ def test_connection():
                 masked_url = f"{protocol}://{user}:***@{parts[1]}"
                 print(f"\nDATABASE_URL: {masked_url}")
             else:
-                print(f"\nDATABASE_URL: [set]")
+                print("\nDATABASE_URL: [set]")
         else:
-            print(f"\nDATABASE_URL: [set]")
+            print("\nDATABASE_URL: [set]")
     else:
-        print(f"\nDATABASE_URL: [set]")
+        print("\nDATABASE_URL: [set]")
 
     # Display database configuration
     db_config = settings.DATABASES["default"]
@@ -94,7 +94,7 @@ def test_connection():
         print(f"Database: {name}")
         print(f"User: {user}")
     elif "sqlite" in engine:
-        print(f"Type: SQLite")
+        print("Type: SQLite")
         print(f"Database: {db_config.get('NAME', 'N/A')}")
         print("\n[WARNING] Currently using SQLite, not Neon Postgres!")
         print("Make sure DATABASE_URL is set correctly.")
@@ -117,14 +117,14 @@ def test_connection():
         with connection.cursor() as cursor:
             cursor.execute("SELECT version();")
             version = cursor.fetchone()[0]
-            print(f"\n[OK] Database Version:")
+            print("\n[OK] Database Version:")
             print(f"  {version}")
 
             # Test a simple query
             cursor.execute("SELECT 1 as test_value, current_database() as db_name, current_user as db_user;")
             result = cursor.fetchone()
             if result:
-                print(f"\n[OK] Query test passed!")
+                print("\n[OK] Query test passed!")
                 print(f"  Test Value: {result[0]}")
                 print(f"  Database Name: {result[1]}")
                 print(f"  Database User: {result[2]}")
@@ -132,7 +132,7 @@ def test_connection():
             # Get some database info
             cursor.execute("SELECT current_database(), version();")
             db_info = cursor.fetchone()
-            print(f"\n[OK] Connection Details:")
+            print("\n[OK] Connection Details:")
             print(f"  Connected to: {db_info[0]}")
             print(f"  PostgreSQL Version: {db_info[1].split(',')[0]}")
 
@@ -142,7 +142,7 @@ def test_connection():
         return True
 
     except Exception as e:
-        print(f"\n[ERROR] Connection failed!")
+        print("\n[ERROR] Connection failed!")
         print(f"  Error: {str(e)}")
         print("\n" + "-" * 60)
         print("Troubleshooting:")
@@ -168,4 +168,3 @@ if __name__ == "__main__":
 
         traceback.print_exc()
         sys.exit(1)
-
