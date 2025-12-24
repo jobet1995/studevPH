@@ -40,8 +40,8 @@ except ImportError:
     print("  pip install -r requirements.txt")
     sys.exit(1)
 
-from django.db import connection
 from django.conf import settings
+from django.db import connection
 
 
 def test_connection():
