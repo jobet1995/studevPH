@@ -95,13 +95,19 @@ DATABASES = {
     }
 }
 
+# Database configuration
+# Supports both SQLite (default) and Postgres (via DATABASE_URL, e.g., Neon)
 DATABASE_URL = os.environ.get("DATABASE_URL")
 if DATABASE_URL:
     DATABASES["default"] = dj_database_url.parse(
         DATABASE_URL,
         conn_max_age=600,
-        ssl_require=True
+        ssl_require=True,
     )
+    # Additional options for Neon/Postgres
+    DATABASES["default"]["OPTIONS"] = {
+        "connect_timeout": 10,
+    }
 
 
 # Password validation

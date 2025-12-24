@@ -203,5 +203,57 @@ jobs:
           curl -L https://github.com/render-oss/cli/releases/download/v1.1.0/cli_1.1.0_linux_amd64.zip -o render.zip
           unzip render.zip
           sudo mv cli_v1.1.0 /usr/local/bin/render
+
+  # 7. Migrate SQLite to Neon (Manual)
+  migrate-to-neon:
+    name: Migrate SQLite to Neon
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    environment: production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python environment
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Set DATABASE_URL and CI environment
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+          echo "CI=true" >> $GITHUB_ENV
+          echo "AUTO_CONFIRM_MIGRATION=true" >> $GITHUB_ENV
+
+      - name: Check for SQLite database
+        run: |
+          if [ -f "db.sqlite3" ]; then
+            echo "SQLite database found"
+            ls -lh db.sqlite3
+          else
+            echo "Warning: SQLite database not found in repository"
+            echo "Make sure to upload it or run migration from local machine"
+          fi
+
+      - name: Run migration script
+        run: |
+          source .venv/bin/activate
+          echo "Running migration from SQLite to Neon..."
+          python migrate_to_neon.py || {
+            echo "Migration failed. Check logs above."
+            exit 1
+          }
+
+      - name: Verify Neon connection
+        run: |
+          source .venv/bin/activate
+          echo "Verifying Neon database connection..."
+          python test_neon_connection.py || {
+            echo "Connection test failed. Check DATABASE_URL configuration."
+            exit 1
+          }
       
     
