@@ -3,3 +3,4 @@ wagtail>=7.2,<7.3
 flake8>=7.2,<7.3
 isort>=6.1,<7.0
 render-python>=2.4
+dj-database-url==3.0.1
