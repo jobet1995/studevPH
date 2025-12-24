@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 import os
 from pathlib import Path
+
 import dj_database_url
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
@@ -94,13 +95,19 @@ DATABASES = {
     }
 }
 
+# Database configuration
+# Supports both SQLite (default) and Postgres (via DATABASE_URL, e.g., Neon)
 DATABASE_URL = os.environ.get("DATABASE_URL")
 if DATABASE_URL:
     DATABASES["default"] = dj_database_url.parse(
         DATABASE_URL,
         conn_max_age=600,
-        ssl_require=True
+        ssl_require=True,
     )
+    # Additional options for Neon/Postgres
+    DATABASES["default"]["OPTIONS"] = {
+        "connect_timeout": 10,
+    }
 
 
 # Password validation
