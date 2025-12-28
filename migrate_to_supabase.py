@@ -47,10 +47,10 @@ def main():
     print("=" * 60)
 
     # Check if DATABASE_URL is set
-    database_url = os.environ.get("DATABASE_URL")
+    database_url = os.environ.get("SUPABASE_URL")
     if not database_url:
         print(
-            "\n[ERROR] DATABASE_URL environment variable is not set!\n"
+            "\n[ERROR] SUPABASE_URL environment variable is not set!\n"
             "Please set it in your .env file or environment variables:\n"
             "  postgresql://user:password@host:port/dbname?sslmode=require\n"
         )
@@ -90,8 +90,8 @@ def main():
         confirm = input(
             "\nThis will:\n"
             "1. Export all data from SQLite\n"
-            "2. Run migrations on Neon Postgres\n"
-            "3. Import all data into Neon Postgres\n\n"
+            "2. Run migrations on Supabase Postgres\n"
+            "3. Import all data into Supabase Postgres\n\n"
             "Continue? (yes/no): "
         )
         if confirm.lower() not in ["yes", "y"]:
@@ -216,7 +216,7 @@ def main():
     print("=" * 60)
     print(
         "\nYour application is now using Neon Postgres.\n"
-        "Make sure DATABASE_URL is set in your production environment.\n"
+        "Make sure SUPABASE_URL is set in your production environment.\n"
     )
     return True
 
